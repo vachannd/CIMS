@@ -39,8 +39,3 @@ class PurchaseOrder(models.Model):
     created_at = models.DateTimeField(default=datetime.now())
     updated_at = models.DateTimeField(auto_now=True)
 
-    def get_all_purchases_by_user(self, user):
-        return self.objects.filter(user=user)
-
-    def get_all_purchases_by_decending_order(self):
-        return self.objects.order_by('-purchase_date')
