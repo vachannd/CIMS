@@ -98,28 +98,24 @@ class AdminCarModelView(APIView):
 class CarListView(APIView):
     def get(self, request):
         payload = custom_token_authentication(request)
-        current_cars = CarsModel.objects.order_by('-year', '-created_at')
-        serializer = UserCarSerializer(current_cars, many=True)
-        return Response(serializer.data)
-
-
-class AdminCarListView(APIView):
-    def get(self, request):
-        payload = custom_token_authentication(request)
         user = CustomUser.objects.get(id=payload['id'])
         if not user.is_staff:
-            raise AuthenticationFailed('Unauthorized')
+            current_cars = CarsModel.objects.order_by('-year', '-created_at')
+            serializer = UserCarSerializer(current_cars, many=True)
+            return Response(serializer.data)
         current_cars = CarsModel.objects.order_by('-created_at')
         serializer = AdminCarSerializer(current_cars, many=True, context={'list_mode': False})
         return Response(serializer.data)
 
 
-class AdminPurchaseOrdersView(APIView):
+class PurchaseOrdersView(APIView):
     def get(self, request):
         payload = custom_token_authentication(request)
         user = CustomUser.objects.get(id=payload['id'])
         if not user.is_staff:
-            raise AuthenticationFailed('Unauthorized')
+            user_purchases = PurchaseOrderModel.objects.filter(user=payload['id'])
+            purchase_serializer = PurchaseOrderSerializer(user_purchases, many=True)
+            return Response(purchase_serializer.data)
         all_purchases = PurchaseOrderModel.objects.all().order_by('-purchase_date')
         serializer = PurchaseOrderSerializer(all_purchases, many=True)
         return Response(serializer.data)
@@ -170,11 +166,3 @@ class PurchaseCarView(APIView):
         car.quantity_available -= quantity
         car.save()
         return Response({'message': f'Purchase successful. Total cost is: {total_price}'}, status=status.HTTP_202_ACCEPTED)
-
-
-class UserPurchaseHistoryView(APIView):
-    def get(self, request):
-        payload = custom_token_authentication(request)
-        user_purchases = PurchaseOrderModel.objects.filter(user=payload['id'])
-        purchase_serializer = PurchaseOrderSerializer(user_purchases, many=True)
-        return Response(purchase_serializer.data)
