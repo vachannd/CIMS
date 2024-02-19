@@ -1,11 +1,11 @@
 # serializers.py
 from rest_framework import serializers
-from .models import Car, CustomUser, PurchaseOrder
+from .models import CarsModel, CustomUser, PurchaseOrderModel
 
 
 class AdminCarSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Car
+        model = CarsModel
         fields = '__all__'
 
     def to_representation(self, instance):
@@ -19,13 +19,13 @@ class AdminCarSerializer(serializers.ModelSerializer):
 
 class UserCarSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Car
-        fields = ('model_name', 'price', 'description', 'quantity_available')
+        model = CarsModel
+        fields = ('model_name', 'price', 'description', 'quantity_available', 'year')
 
 
 class PurchaseOrderSerializer(serializers.ModelSerializer):
     class Meta:
-        model = PurchaseOrder
+        model = PurchaseOrderModel
         fields = '__all__'
 
 

@@ -1,11 +1,25 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .models import Car, CustomUser, PurchaseOrder
+from .models import CarsModel, CustomUser, PurchaseOrderModel
 from .serializers import AdminCarSerializer, CustomUserSerializer, PurchaseOrderSerializer, UserCarSerializer
 import jwt
 import datetime
 from rest_framework.exceptions import AuthenticationFailed
+
+
+def custom_token_authentication(request):
+    token = request.data.get('token')
+    if not token:
+        raise AuthenticationFailed('Unauthenticated')
+    try:
+        payload = jwt.decode(token, 'secret', algorithms=['HS256'])
+    except jwt.ExpiredSignatureError:
+        raise AuthenticationFailed('Unauthenticated')
+    user = CustomUser.objects.get(id=payload['id'])
+    if not user:
+        raise AuthenticationFailed('Invalid user id')
+    return payload
 
 
 class RegisterView(APIView):
@@ -26,8 +40,9 @@ class LoginView(APIView):
     def post(self, request):
         email = request.data.get('email')
         password = request.data.get('password')
-        user = CustomUser.objects.get(email=email)
-        if not user:
+        try:
+            user = CustomUser.objects.get(email=email)
+        except CustomUser.DoesNotExist:
             raise AuthenticationFailed('User not found')
         if not user.check_password(password):
             raise AuthenticationFailed('Incorrect password')
@@ -56,7 +71,7 @@ class UserView(APIView):
             raise AuthenticationFailed('Unauthenticated')
         # user = CustomUser.objects.get(id=payload['id'])
         # serializer = CustomUserSerializer(user)
-        user_purchases = PurchaseOrder.objects.filter(user=payload['id'])
+        user_purchases = PurchaseOrderModel.objects.filter(user=payload['id'])
         purchase_serializer = PurchaseOrderSerializer(user_purchases, many=True)
         return Response({
             'id': payload['id'],
@@ -67,88 +82,99 @@ class UserView(APIView):
 
 class CreateCarModelView(APIView):
     def post(self, request):
-        serializer = AdminCarSerializer(data=request.data)
+        serializer = AdminCarSerializer(data=request.data, context={'list_mode': False})
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
+class AdminCarModelView(APIView):
+    def get(self, request):
+        car_models = CarsModel.objects.all()
+        serializer = AdminCarSerializer(car_models, many=True, context={'list_mode': True})
+        return Response(serializer.data)
+
+
 class CarListView(APIView):
     def get(self, request):
-        token = request.data.get('token')
-        if not token:
-            raise AuthenticationFailed('Unauthenticated')
-        try:
-            payload = jwt.decode(token, 'secret', algorithms=['HS256'])
-        except jwt.ExpiredSignatureError:
-            raise AuthenticationFailed('Unauthenticated')
-        current_cars = Car.objects.order_by('-created_at')
+        payload = custom_token_authentication(request)
+        current_cars = CarsModel.objects.order_by('-year', '-created_at')
         serializer = UserCarSerializer(current_cars, many=True)
         return Response(serializer.data)
 
 
 class AdminCarListView(APIView):
     def get(self, request):
-        token = request.data.get('token')
-        if not token:
-            raise AuthenticationFailed('Unauthenticated')
-        try:
-            payload = jwt.decode(token, 'secret', algorithms=['HS256'])
-        except jwt.ExpiredSignatureError:
-            raise AuthenticationFailed('Unauthenticated')
+        payload = custom_token_authentication(request)
         user = CustomUser.objects.get(id=payload['id'])
         if not user.is_staff:
             raise AuthenticationFailed('Unauthorized')
-        current_cars = Car.objects.order_by('-created_at')
+        current_cars = CarsModel.objects.order_by('-created_at')
         serializer = AdminCarSerializer(current_cars, many=True, context={'list_mode': False})
         return Response(serializer.data)
 
 
-class AdminPurchaseView(APIView):
+class AdminPurchaseOrdersView(APIView):
     def get(self, request):
-        token = request.data.get('token')
-        if not token:
-            raise AuthenticationFailed('Unauthenticated')
-        try:
-            payload = jwt.decode(token, 'secret', algorithms=['HS256'])
-        except jwt.ExpiredSignatureError:
-            raise AuthenticationFailed('Unauthenticated')
+        payload = custom_token_authentication(request)
         user = CustomUser.objects.get(id=payload['id'])
         if not user.is_staff:
             raise AuthenticationFailed('Unauthorized')
-        all_purchases = PurchaseOrder.objects.all().order_by('-purchase_date')
+        all_purchases = PurchaseOrderModel.objects.all().order_by('-purchase_date')
         serializer = PurchaseOrderSerializer(all_purchases, many=True)
-        return Response(serializer.data)
-
-
-class AdminCarModelView(APIView):
-    def get(self, request):
-        car_models = Car.objects.all()
-        serializer = AdminCarSerializer(car_models, many=True, context={'list_mode': True})
         return Response(serializer.data)
 
 
 class AddMoreCarsView(APIView):
     def post(self, request):
-        token = request.data.get('token')
-        if not token:
-            raise AuthenticationFailed('Unauthenticated')
-        try:
-            payload = jwt.decode(token, 'secret', algorithms=['HS256'])
-        except jwt.ExpiredSignatureError:
-            raise AuthenticationFailed('Unauthenticated')
+        payload = custom_token_authentication(request)
         user = CustomUser.objects.get(id=payload['id'])
         if not user.is_staff:
             raise AuthenticationFailed('Unauthorized')
 
         quantity = request.data.get('quantity')
-        if not quantity:
-            return Response({'error': 'Quantity is required in the request data'}, status=status.HTTP_400_BAD_REQUEST)
+        if not quantity or quantity < 1:
+            return Response({'error': 'Quantity is required in the request data and should be at least 1'}, status=status.HTTP_400_BAD_REQUEST)
 
         car_model_id = request.data.get('car_model_id')
-        car = Car.objects.filter(id=car_model_id)
+        try:
+            car = CarsModel.objects.get(id=car_model_id)
+        except CarsModel.DoesNotExist:
+            return Response({'message': 'Car model with the specified ID does not exist'}, status=status.HTTP_404_NOT_FOUND)
+
+        car.quantity_available += quantity
+        car.save()
+
+        return Response(status=status.HTTP_200_OK)
+
+
+class PurchaseCarView(APIView):
+    def post(self, request):
+        payload = custom_token_authentication(request)
+        user = CustomUser.objects.get(id=payload['id'])
+
+        car_model_id = request.data.get('car_model_id')
+        car = CarsModel.objects.get(id=car_model_id)
         if not car:
             return Response({'message': 'Car model with the specified ID does not exist'}, status=status.HTTP_404_NOT_FOUND)
 
-        car.update(quantity=car.quantity + request.data.get('quantity'))
-        return Response(status=status.HTTP_200_OK)
+        quantity = request.data.get('quantity')
+        if not quantity:
+            return Response({'error': 'Quantity is required in the request data and should be atleast 1'}, status=status.HTTP_400_BAD_REQUEST)
+
+        if car.quantity_available < quantity:
+            return Response({'message': 'Requested quantity is not available'}, status=status.HTTP_400_BAD_REQUEST)
+
+        total_price = car.price * quantity
+        PurchaseOrderModel.objects.create(user=user, car=car, quantity=quantity, total_price=total_price)
+        car.quantity_available -= quantity
+        car.save()
+        return Response({'message': f'Purchase successful. Total cost is: {total_price}'}, status=status.HTTP_202_ACCEPTED)
+
+
+class UserPurchaseHistoryView(APIView):
+    def get(self, request):
+        payload = custom_token_authentication(request)
+        user_purchases = PurchaseOrderModel.objects.filter(user=payload['id'])
+        purchase_serializer = PurchaseOrderSerializer(user_purchases, many=True)
+        return Response(purchase_serializer.data)
