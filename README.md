@@ -32,3 +32,15 @@ __________________
     > npm run dev
 
 3. Frontend will run on http://localhost:3000
+
+
+References:
+1. https://nextjs.org/learn/dashboard-app
+
+2. https://nextjs.org/docs/app/building-your-application
+
+3. https://stackoverflow.com/questions/34989915/write-only-read-only-fields-in-django-rest-framework 
+
+4. https://stackoverflow.com/questions/5508888/matching-query-does-not-exist-error-in-django 
+
+5. https://docs.djangoproject.com/en/5.0/topics/auth/default/#authenticating-users 

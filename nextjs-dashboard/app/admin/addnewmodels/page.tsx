@@ -20,19 +20,17 @@ const AddCarModelPage = () => {
   };
 
   const handleAddCarModel = () => {
-    // Perform validation and call the backend to add a new car model
     fetch('http://localhost:8000/api/addCarModel', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${localStorage.getItem('token')}`, // Include the token
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
       body: JSON.stringify(modelData),
     })
       .then((response) => {
         if (response.ok) {
           setSuccessMessage('Car model added successfully!');
-          // Optionally, redirect or perform other actions after success
         } else {
           console.error('Error adding car model:', response.status);
         }
