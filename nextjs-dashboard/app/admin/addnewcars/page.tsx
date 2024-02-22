@@ -6,12 +6,28 @@ const Page = () => {
   const [carModels, setCarModels] = useState<Car[]>([]);
   const [selectedCarModel, setSelectedCarModel] = useState('');
   const [quantity, setQuantity] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
 
   useEffect(() => {
-    fetch('http://localhost:8000/api/getCarModels')
-      .then((response) => response.json())
-      .then((data) => setCarModels(data))
-      .catch((error) => console.error('Error fetching car models:', error));
+    const fetchCarModels = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await fetch('http://localhost:8000/api/getCarModels', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          Array.isArray(data) && setCarModels(data);
+        }
+      } catch (error) {
+        console.error('Error fetching car models:', error);
+      }
+    };
+
+    fetchCarModels();
   }, []);
 
   const handleAddMoreCars = () => {
@@ -28,7 +44,7 @@ const Page = () => {
     })
       .then((response) => {
         if (response.ok) {
-          console.log('Cars added successfully!');
+          setSuccessMessage('Cars added successfully!');
         } else {
           console.error('Error adding cars:', response.status);
         }
@@ -46,11 +62,12 @@ const Page = () => {
           onChange={(e) => setSelectedCarModel(e.target.value)}
         >
           <option value="" disabled>Select a car model</option>
-          {carModels.map((car) => (
-            <option key={car.id} value={car.id}>
-              {car.model_name}
-            </option>
-          ))}
+          {Array.isArray(carModels) &&
+            carModels.map((car) => (
+              <option key={car.id} value={car.id}>
+                {car.model_name}
+              </option>
+            ))}
         </select>
       </div>
       <div>
@@ -62,6 +79,7 @@ const Page = () => {
         />
       </div>
       <button onClick={handleAddMoreCars}>Add More Cars</button>
+      {successMessage && <p>{successMessage}</p>}
     </div>
   );
 };

@@ -9,6 +9,7 @@ const AddCarModelPage = () => {
     description: '',
     quantity_available: '',
   });
+  const [successMessage, setSuccessMessage] = useState('');
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -30,7 +31,7 @@ const AddCarModelPage = () => {
     })
       .then((response) => {
         if (response.ok) {
-          console.log('Car model added successfully!');
+          setSuccessMessage('Car model added successfully!');
           // Optionally, redirect or perform other actions after success
         } else {
           console.error('Error adding car model:', response.status);
@@ -87,6 +88,7 @@ const AddCarModelPage = () => {
         />
       </div>
       <button onClick={handleAddCarModel}>Add Car Model</button>
+      {successMessage && <p>{successMessage}</p>}
     </div>
   );
 };
