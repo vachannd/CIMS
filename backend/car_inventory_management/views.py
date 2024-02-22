@@ -1,6 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from django.db.models import Count
 from .models import CarsModel, CustomUser, PurchaseOrderModel
 from .serializers import AdminCarSerializer, CustomUserSerializer, PurchaseOrderSerializer, UserCarSerializer
 import jwt
@@ -95,10 +96,15 @@ class CreateCarModelView(APIView):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
-class AdminCarModelView(APIView):
+class CarModelView(APIView):
     def get(self, request):
+        user = custom_token_authentication(request)
+        # car_models = (CarsModel.objects.values('model_name').annotate(Count('model_name')).values('model_name', 'price', 'year', 'description', 'quantity_available'))
         car_models = CarsModel.objects.all()
-        serializer = AdminCarSerializer(car_models, many=True, context={'list_mode': True})
+        if not user.is_staff:
+            serializer = UserCarSerializer(car_models, many=True)
+            return Response(serializer.data)
+        serializer = AdminCarSerializer(car_models, many=True, context={'list_mode': False})
         return Response(serializer.data)
 
 
@@ -118,7 +124,7 @@ class PurchaseOrdersView(APIView):
     def get(self, request):
         user = custom_token_authentication(request)
         if not user.is_staff:
-            user_purchases = PurchaseOrderModel.objects.filter(user=payload['id'])
+            user_purchases = PurchaseOrderModel.objects.filter(user=user.id)
             purchase_serializer = PurchaseOrderSerializer(user_purchases, many=True)
             return Response(purchase_serializer.data)
         all_purchases = PurchaseOrderModel.objects.all().order_by('-purchase_date')
@@ -151,8 +157,9 @@ class AddMoreCarsView(APIView):
 class PurchaseCarView(APIView):
     def post(self, request):
         user = custom_token_authentication(request)
-
-        car_model_id = request.data.get('car_model_id')
+        car_model_id = request.data.get('car_model_id', None)
+        if not car_model_id:
+            return Response({'error': 'Car model ID is required in the request data'}, status=status.HTTP_400_BAD_REQUEST)
         car = CarsModel.objects.get(id=car_model_id)
         if not car:
             return Response({'message': 'Car model with the specified ID does not exist'}, status=status.HTTP_404_NOT_FOUND)

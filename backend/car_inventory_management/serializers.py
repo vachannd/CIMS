@@ -20,7 +20,7 @@ class AdminCarSerializer(serializers.ModelSerializer):
 class UserCarSerializer(serializers.ModelSerializer):
     class Meta:
         model = CarsModel
-        fields = ('model_name', 'price', 'description', 'quantity_available', 'year')
+        fields = ('id', 'model_name', 'price', 'description', 'quantity_available', 'year')
 
 
 class PurchaseOrderSerializer(serializers.ModelSerializer):

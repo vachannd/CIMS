@@ -29,6 +29,6 @@ __________________
 1. Install packages: npm install
 
 2. Run the frontend:
-    > npm start
+    > npm run dev
 
 3. Frontend will run on http://localhost:3000
