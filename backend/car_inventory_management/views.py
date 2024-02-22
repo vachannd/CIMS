@@ -9,13 +9,18 @@ from rest_framework.exceptions import AuthenticationFailed
 
 
 def custom_token_authentication(request):
-    token = request.data.get('token')
+    auth_header = request.headers.get('Authorization')
+
+    if not auth_header or not auth_header.startswith('Bearer '):
+        raise AuthenticationFailed('Invalid token')
+
+    token = auth_header.split('Bearer ')[1]
     if not token:
-        raise AuthenticationFailed('Unauthenticated')
+        raise AuthenticationFailed('Token not found')
     try:
         payload = jwt.decode(token, 'secret', algorithms=['HS256'])
     except jwt.ExpiredSignatureError:
-        raise AuthenticationFailed('Unauthenticated')
+        raise AuthenticationFailed('Expired token')
     user = CustomUser.objects.get(id=payload['id'])
     if not user:
         raise AuthenticationFailed('Invalid user id')
@@ -49,7 +54,9 @@ class LoginView(APIView):
         payload = {
             'id': user.id,
             'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=60),
-            'iat': datetime.datetime.utcnow()
+            'iat': datetime.datetime.utcnow(),
+            'role': 'admin' if user.is_staff else 'user',
+            'name': user.name,
         }
         token = jwt.encode(payload, 'secret', algorithm='HS256')
         return Response({'token': token, 'id': user.id, 'name': user.name})

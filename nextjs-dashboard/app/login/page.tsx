@@ -1,6 +1,7 @@
 'use client'
 import React, { SyntheticEvent } from "react";
 import { useRouter } from "next/navigation";
+import '../ui/global.css';
 import './loginStyle.css';
 
 const Login = () => {
@@ -11,6 +12,13 @@ const Login = () => {
     const submit = async (e: SyntheticEvent) => {
         e.preventDefault();
 
+        const decodeToken = (token) => {
+            const encodedPayload = token.split('.')[1];
+            const decodedPayload = atob(encodedPayload);
+            const parsedPayload = JSON.parse(decodedPayload);
+            return parsedPayload;
+          };
+
         const response = await fetch("http://localhost:8000/api/login", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -20,10 +28,17 @@ const Login = () => {
             }),
         });
         const content = await response.json();
-        console.log(content);
+        const loginInfo = decodeToken(content.token);
+        // console.log(loginInfo);
+        // if the user is an admin then redirect to admin page else redirect to user page
         if (response.ok) {
             window.localStorage.setItem("token", content.token);
-            router.push("/home");
+            if (loginInfo.role === "admin"){
+                router.push("/admin");
+            }
+            else{
+                router.push("/user");
+            }
         }
     };
 
