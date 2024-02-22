@@ -24,9 +24,12 @@ class UserCarSerializer(serializers.ModelSerializer):
 
 
 class PurchaseOrderSerializer(serializers.ModelSerializer):
+    user_name = serializers.ReadOnlyField(source='user.name')
+    car_model_name = serializers.ReadOnlyField(source='car.model_name')
+
     class Meta:
         model = PurchaseOrderModel
-        fields = '__all__'
+        fields = ['id', 'user_name', 'car_model_name', 'quantity', 'total_price', 'purchase_date', 'is_active', 'created_at', 'updated_at']
 
 
 class CustomUserSerializer(serializers.ModelSerializer):
