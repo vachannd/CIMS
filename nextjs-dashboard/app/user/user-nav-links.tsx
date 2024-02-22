@@ -9,15 +9,15 @@ import {
   import clsx from 'clsx';
   
   const links = [
-    { name: 'Home', href: '/home', icon: HomeIcon },
+    { name: 'Home', href: '/user', icon: HomeIcon },
     {
         name: 'purchases',
-        href: '/home/mypurchases',
+        href: '/user/mypurchases',
         icon: DocumentDuplicateIcon,
     },
     {
         name: 'purchasecar',
-        href: '/home/user/purchasecar',
+        href: '/user/purchasecar',
         icon: DocumentDuplicateIcon,
     },
   ];
