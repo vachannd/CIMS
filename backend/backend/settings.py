@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'car_inventory_management',
+    'django_nextjs',
     'rest_framework.authtoken',
 ]
 

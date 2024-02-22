@@ -7,6 +7,10 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Register from './pages/Register';
 import Home from './pages/Home';
 
+function MyButton() {
+  return (<button>Click me</button>);
+}
+
 function App() {
   return (
     <div className="App">
@@ -19,6 +23,7 @@ function App() {
               <Route path="/login" element={<Login/>}/>
               <Route path="/register" element={<Register/>}/>
             </Routes>
+            <MyButton />
       
         </main>
       </BrowserRouter>
