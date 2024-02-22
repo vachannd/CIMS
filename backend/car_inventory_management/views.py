@@ -19,7 +19,7 @@ def custom_token_authentication(request):
     user = CustomUser.objects.get(id=payload['id'])
     if not user:
         raise AuthenticationFailed('Invalid user id')
-    return payload
+    return user
 
 
 class RegisterView(APIView):
@@ -97,8 +97,7 @@ class AdminCarModelView(APIView):
 
 class CarListView(APIView):
     def get(self, request):
-        payload = custom_token_authentication(request)
-        user = CustomUser.objects.get(id=payload['id'])
+        user = custom_token_authentication(request)
         if not user.is_staff:
             current_cars = CarsModel.objects.order_by('-year', '-created_at')
             serializer = UserCarSerializer(current_cars, many=True)
@@ -110,8 +109,7 @@ class CarListView(APIView):
 
 class PurchaseOrdersView(APIView):
     def get(self, request):
-        payload = custom_token_authentication(request)
-        user = CustomUser.objects.get(id=payload['id'])
+        user = custom_token_authentication(request)
         if not user.is_staff:
             user_purchases = PurchaseOrderModel.objects.filter(user=payload['id'])
             purchase_serializer = PurchaseOrderSerializer(user_purchases, many=True)
@@ -123,8 +121,7 @@ class PurchaseOrdersView(APIView):
 
 class AddMoreCarsView(APIView):
     def post(self, request):
-        payload = custom_token_authentication(request)
-        user = CustomUser.objects.get(id=payload['id'])
+        user = custom_token_authentication(request)
         if not user.is_staff:
             raise AuthenticationFailed('Unauthorized')
 
@@ -146,8 +143,7 @@ class AddMoreCarsView(APIView):
 
 class PurchaseCarView(APIView):
     def post(self, request):
-        payload = custom_token_authentication(request)
-        user = CustomUser.objects.get(id=payload['id'])
+        user = custom_token_authentication(request)
 
         car_model_id = request.data.get('car_model_id')
         car = CarsModel.objects.get(id=car_model_id)
