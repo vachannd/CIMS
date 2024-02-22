@@ -1,10 +1,8 @@
 from django.db import models
 from datetime import datetime
 from django.contrib.auth.models import AbstractUser
-
-
 from django.contrib.auth.models import BaseUserManager
-from django.utils import timezone
+
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):

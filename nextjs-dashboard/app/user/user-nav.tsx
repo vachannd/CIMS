@@ -1,6 +1,6 @@
 'use client'
 import Link from 'next/link';
-import NavLinks from './nav-links.tsx';
+import NavLinks from './user-nav-links.tsx';
 import { PowerIcon } from '@heroicons/react/24/outline';
 import React from 'react';
 import { useRouter } from 'next/navigation';
