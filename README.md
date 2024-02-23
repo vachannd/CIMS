@@ -38,13 +38,16 @@ _________________
 3. Install all dependencies: 
 ```
 pip3 install django
+
 pip3 install -r requirements.txt
 ```
 
 4. Run the database migrations: 
 ```
 cd backend
+
 python3 manage.py makemigrations
+
 python3 manage.py migrate
 ```
 5. Create a new account for an admin using the following command. The command will prompt you to enter details about the admin, use the same email and password entered to login
@@ -67,6 +70,7 @@ __________________
 
 ```
 cd frontend
+
 npm install
 ```
 
