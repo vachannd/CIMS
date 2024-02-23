@@ -36,7 +36,7 @@ _________________
 2. Activate virtual environment: `source venv/bin/activate`
 
 3. Install all dependencies: 
-```bash
+```
 pip3 install django
 pip3 install -r requirements.txt
 ```
