@@ -94,7 +94,7 @@ const PurchaseCarPage: React.FC = () => {
             value={quantity}
             onChange={(e) => setQuantity(parseInt(e.target.value, 10))}
         />
-        <button onClick={handlePurchase}>Purchase</button>
+        <button onClick={handlePurchase} style={{ display: 'block', margin: '10px', padding: '10px', borderRadius: '5px', backgroundColor: '#007bff', color: '#fff', cursor: 'pointer' }}>Purchase Car</button>
         {errorMessage && <p>{errorMessage}</p>}
         </div>
     );

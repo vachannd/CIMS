@@ -46,9 +46,9 @@ const Page: React.FC = () => {
       <br/>
       <p>Car Inventory: </p>
       <br/>
-      <ul>
+      <ul style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
         {latestCars.map((car) => (
-          <li key={car.id}>
+          <li key={car.id} style={{ padding: '10px', border: '1px solid #ccc', borderRadius: '5px' }}>
             <p>Model Name: {car.model_name}</p>
             <p>Price: {car.price}</p>
             <p>Year: {car.year}</p>
@@ -56,8 +56,8 @@ const Page: React.FC = () => {
             <p>Description: {car.description}</p>
             <p>Quantity Available: {car.quantity_available}</p>
             <p>Is Active: {car.is_active}</p>
-            <p>Created At: {car.created_at}</p>
-            <p>Updated At: {car.updated_at}</p>
+            <p>Created At: {new Date(car.created_at).toLocaleDateString()}</p>
+            <p>Updated At: {new Date(car.updated_at).toLocaleDateString()}</p>
           </li>
         ))}
       </ul>

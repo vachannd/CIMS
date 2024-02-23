@@ -78,7 +78,7 @@ const Page = () => {
           onChange={(e) => setQuantity(e.target.value)}
         />
       </div>
-      <button onClick={handleAddMoreCars}>Add More Cars</button>
+      <button onClick={handleAddMoreCars} style={{ display: 'block', margin: '10px', padding: '10px', borderRadius: '5px', backgroundColor: '#007bff', color: '#fff', cursor: 'pointer' }}>Add More Cars</button>
       {successMessage && <p>{successMessage}</p>}
     </div>
   );

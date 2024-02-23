@@ -1,40 +1,75 @@
 # CIMS
 Car Inventory management System
 
+This application helps manage Car Inventory for a dealer/manufacturer
+
+The features include:
+
+1. User types: Admin and normal users
+
+2. Admin can:
+
+    * Add a new car model
+
+    * Add more cars to the inventory of an existing car model
+
+    * See a list of all purchase orders of all users
+
+    * See a list of all the cars available in the inventory
+
+3. Users can:
+
+    * See the inventory of cars
+
+    * Purchase cars from the inventory
+
+    * See their past purchase orders
 
 _________________
-<h3>Backend:</h3>
 
-1. Create a virtual environment: python3.8 -m venv venv
+<h3> Dev Setup </h3>
 
-2. Activate virtual environment: source venv/bin/activate
+## Backend:
+
+1. Create a virtual environment: `python3 -m venv venv`
+
+2. Activate virtual environment: `source venv/bin/activate`
 
 3. Install all dependencies: 
-    > pip3 install django
-    > python3.8 -m pip3 -r requirements.txt
+```bash
+pip3 install django
+pip3 install -r requirements.txt
+```
 
 4. Run the database migrations: 
-    > python3.8 manage.py makemigrations
-    > python manage.py migrate
+```bash
+cd backend
+python3 manage.py makemigrations
+python3 manage.py migrate
 
-5. Run the app: 
-    > python3.8 manage.py runserver
-    
-6. Backend will run on localhost:8000
+5. Create a new account for an admin using the following command. The command will prompt you to enter details about the admin, use the same email and password entered to login
+```bash
+python3 manage.py createsuperuser
+```
 
-7. Create a new account for an admin using the following command. The command will prompt you to enter details about the admin, use the same email and password entered to login
-    > cd backend
-    > python3.8 manage.py createsuperuser
+6. Run the app: 
+```bash
+python3 manage.py runserver
+```
 
+7. Backend will run on `localhost:8000`
 
 
 __________________
-<h3>Frontend:</h3>
+## Frontend:
 
-1. Install packages: npm install
+1. Install packages: 
+```bash  
+cd frontend
+npm install
+```
 
-2. Run the frontend:
-    > npm run dev
+2. Run the frontend: `npm run dev`
 
 3. Frontend will run on http://localhost:3000
 

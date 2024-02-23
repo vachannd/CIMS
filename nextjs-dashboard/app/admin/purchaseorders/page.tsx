@@ -30,19 +30,20 @@ const PurchaseOrdersPage = () => {
   return (
     <div>
       <h1>All Purchase Orders</h1>
-      <ul>
+      <ul style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
         {purchaseOrders.map((order) => (
-          <li key={order.id}>
+          <li key={order.id} style={{ padding: '10px', border: '1px solid #ccc', borderRadius: '5px' }}>
             <p>User: {order.user_name}</p>
             <p>Car Model: {order.car_model_name}</p>
             <p>Quantity: {order.quantity}</p>
             <p>Total Price: {order.total_price}</p>
-            <p>Purchase Date: {order.purchase_date}</p>
+            <p>Purchase Date: {new Date(order.purchase_date).toLocaleDateString()}</p>
           </li>
         ))}
       </ul>
     </div>
   );
+  
 };
 
 export default PurchaseOrdersPage;
