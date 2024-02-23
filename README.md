@@ -22,6 +22,11 @@ _________________
     
 6. Backend will run on localhost:8000
 
+7. Create a new account for an admin using the following command. The command will prompt you to enter details about the admin, use the same email and password entered to login
+    > cd backend
+    > python3.8 manage.py createsuperuser
+
+
 
 __________________
 <h3>Frontend:</h3>
@@ -33,7 +38,6 @@ __________________
 
 3. Frontend will run on http://localhost:3000
 
-
 References:
 1. https://nextjs.org/learn/dashboard-app
 
@@ -43,4 +47,4 @@ References:
 
 4. https://stackoverflow.com/questions/5508888/matching-query-does-not-exist-error-in-django 
 
-5. https://docs.djangoproject.com/en/5.0/topics/auth/default/#authenticating-users 
+5. https://docs.djangoproject.com/en/5.0/topics/auth/default/#authenticating-users
