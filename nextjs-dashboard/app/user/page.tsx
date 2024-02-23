@@ -45,9 +45,9 @@ const Page: React.FC = () => {
         <br/>
         <p>Latest Cars: </p>
         <br/>
-        <ul>
+        <ul style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
             {latestCars.map((car) => (
-            <li key={car.id}>
+            <li key={car.id} style={{ padding: '10px', border: '1px solid #ccc', borderRadius: '5px' }}>
                 <p>Model Name: {car.model_name}</p>
                 <p>Price: {car.price}</p>
                 <p>Year: {car.year}</p>

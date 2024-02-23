@@ -39,9 +39,9 @@ const AddCarModelPage = () => {
   };
 
   return (
-    <div>
+    <div style={{ textAlign: 'center' }}>
       <h1>Add Car Model</h1>
-      <div>
+      <div style={{ margin: '10px' }}>
         <label>Model Name:</label>
         <input
           type="text"
@@ -50,7 +50,7 @@ const AddCarModelPage = () => {
           onChange={handleInputChange}
         />
       </div>
-      <div>
+      <div style={{ margin: '10px' }}>
         <label>Price:</label>
         <input
           type="number"
@@ -59,7 +59,7 @@ const AddCarModelPage = () => {
           onChange={handleInputChange}
         />
       </div>
-      <div>
+      <div style={{ margin: '10px' }}>
         <label>Year:</label>
         <input
           type="number"
@@ -68,7 +68,7 @@ const AddCarModelPage = () => {
           onChange={handleInputChange}
         />
       </div>
-      <div>
+      <div style={{ margin: '10px' }}>
         <label>Description:</label>
         <textarea
           name="description"
@@ -76,7 +76,7 @@ const AddCarModelPage = () => {
           onChange={handleInputChange}
         />
       </div>
-      <div>
+      <div style={{ margin: '10px' }}>
         <label>Quantity Available:</label>
         <input
           type="number"
@@ -85,10 +85,24 @@ const AddCarModelPage = () => {
           onChange={handleInputChange}
         />
       </div>
-      <button onClick={handleAddCarModel}>Add Car Model</button>
+      <button
+        onClick={handleAddCarModel}
+        style={{
+          display: 'inline-block',
+          margin: '10px',
+          padding: '10px',
+          borderRadius: '5px',
+          backgroundColor: '#007bff',
+          color: '#fff',
+          cursor: 'pointer',
+        }}
+      >
+        Add Car Model
+      </button>
       {successMessage && <p>{successMessage}</p>}
     </div>
   );
+  
 };
 
 export default AddCarModelPage;
