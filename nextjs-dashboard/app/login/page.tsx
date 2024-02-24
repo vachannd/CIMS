@@ -8,9 +8,14 @@ const Login = () => {
     const [email, setEmail] = React.useState("");
     const [password, setPassword] = React.useState("");
     const router = useRouter();
+
+    const registerUser = () => {
+        router.push("/register");
+    };
     
     const submit = async (e: SyntheticEvent) => {
         e.preventDefault();
+
 
         const decodeToken = (token) => {
             const encodedPayload = token.split('.')[1];
@@ -67,9 +72,15 @@ const Login = () => {
                     />
                     <label htmlFor="password"></label>
                 </div>
-                <button className="submit-button w-100" type="submit">
-                    Sign in
-                </button>
+                <div className="button-container">
+                    <button className="submit-button w-100" type="submit">
+                        Sign in
+                    </button>
+                    <div className="button-gap"></div>
+                    <button type="button" className="submit-button w-100" onClick={registerUser}>
+                        Register here
+                    </button>
+                </div>
                 <p className="mt-5 mb-3 text-body-secondary">
                     Car Inventory management System
                 </p>

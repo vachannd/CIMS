@@ -58,3 +58,13 @@ body {
     align-items: center;
     text-align: center;
   }
+
+
+  .button-container {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .button-gap {
+      width: 10px; /* Adjust the width as needed */
+  }
