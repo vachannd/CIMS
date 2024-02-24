@@ -25,6 +25,8 @@ The features include:
 
     * See their past purchase orders
 
+NOTE: Please refresh the page after signing in.
+
 _________________
 
 <h3> Dev Setup </h3>
