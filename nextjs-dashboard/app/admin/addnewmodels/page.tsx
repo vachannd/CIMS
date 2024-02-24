@@ -10,6 +10,7 @@ const AddCarModelPage = () => {
     quantity_available: '',
   });
   const [successMessage, setSuccessMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -30,8 +31,11 @@ const AddCarModelPage = () => {
     })
       .then((response) => {
         if (response.ok) {
+          setErrorMessage('');
           setSuccessMessage('Car model added successfully!');
         } else {
+          setSuccessMessage('');
+          setErrorMessage('Error adding car model.');
           console.error('Error adding car model:', response.status);
         }
       })
@@ -100,6 +104,7 @@ const AddCarModelPage = () => {
         Add Car Model
       </button>
       {successMessage && <p>{successMessage}</p>}
+      {errorMessage && <p>{errorMessage}</p>}
     </div>
   );
   

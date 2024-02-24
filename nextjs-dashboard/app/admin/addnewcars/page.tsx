@@ -1,12 +1,14 @@
 'use client'
 import React, { useState, useEffect } from 'react';
 import { Car } from '../../lib/definitions';
+import { set } from 'zod';
 
 const Page = () => {
   const [carModels, setCarModels] = useState<Car[]>([]);
   const [selectedCarModel, setSelectedCarModel] = useState('');
   const [quantity, setQuantity] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
     const fetchCarModels = async () => {
@@ -19,11 +21,13 @@ const Page = () => {
         });
 
         if (response.ok) {
+          setErrorMessage('');
           const data = await response.json();
           Array.isArray(data) && setCarModels(data);
         }
       } catch (error) {
         console.error('Error fetching car models:', error);
+        setErrorMessage('Error fetching car models.');
       }
     };
 
@@ -44,9 +48,12 @@ const Page = () => {
     })
       .then((response) => {
         if (response.ok) {
+          setErrorMessage('');
           setSuccessMessage('Cars added successfully!');
         } else {
+          setSuccessMessage('');
           console.error('Error adding cars:', response.status);
+          setErrorMessage(`Error Adding cars. Check that all fields have been added.`);
         }
       })
       .catch((error) => console.error('Error adding cars:', error));
@@ -80,6 +87,7 @@ const Page = () => {
       </div>
       <button onClick={handleAddMoreCars} style={{ display: 'block', margin: '10px', padding: '10px', borderRadius: '5px', backgroundColor: '#007bff', color: '#fff', cursor: 'pointer' }}>Add More Cars</button>
       {successMessage && <p>{successMessage}</p>}
+      {errorMessage && <p>{errorMessage}</p>}
     </div>
   );
 };

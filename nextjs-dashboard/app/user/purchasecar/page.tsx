@@ -6,6 +6,7 @@ import { Car } from '../../lib/definitions';
 const PurchaseCarPage: React.FC = () => {
     const [quantity, setQuantity] = useState(1);
     const [errorMessage, setErrorMessage] = useState('');
+    const [successMessage, setSuccessMessage] = useState('');
     const [carModels, setCarModels] = useState<Car[]>([]);
     const [selectedCarModel, setSelectedCarModel] = useState<Car | null>(null);
 
@@ -57,13 +58,18 @@ const PurchaseCarPage: React.FC = () => {
         });
     
         if (response.ok) {
+            setErrorMessage('');
+            setSuccessMessage('Purchase successful!');
             console.log('Purchase successful!');
         } else {
             const data = await response.json();
+            console.error('Error purchasing car:', );
+            setSuccessMessage('');
             setErrorMessage(data.message);
         }
         } catch (error) {
         console.error('Error purchasing car:', error);
+        setErrorMessage('Error purchasing car');
         }
     };
 
@@ -96,6 +102,7 @@ const PurchaseCarPage: React.FC = () => {
         />
         <button onClick={handlePurchase} style={{ display: 'block', margin: '10px', padding: '10px', borderRadius: '5px', backgroundColor: '#007bff', color: '#fff', cursor: 'pointer' }}>Purchase Car</button>
         {errorMessage && <p>{errorMessage}</p>}
+        {successMessage && <p>{successMessage}</p>}
         </div>
     );
     };
